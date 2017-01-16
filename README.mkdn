@@ -139,8 +139,12 @@ values are the names of generated methods.  The available options are:
 
 # CONTRIBUTORS
 
-Thanks to [MSTROUT](https://metacpan.org/author/MSTROUT) for the
+Thanks to
+
+- [MSTROUT](https://metacpan.org/author/MSTROUT) for the
 suggestion to house this code in its own module.
+- [HAARG](https://metacpan.org/author/HAARG) for reviewing
+an initial version of this code.
 
 # AUTHOR
 

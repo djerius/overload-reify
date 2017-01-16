@@ -427,5 +427,18 @@ L<Class::Method::Modfiers>, L<Moo>, L<Moose>.
 
 =head1 CONTRIBUTORS
 
-Thanks to L<MSTROUT|https://metacpan.org/author/MSTROUT> for the
+Thanks to
+
+=over
+
+=item *
+
+L<MSTROUT|https://metacpan.org/author/MSTROUT> for the
 suggestion to house this code in its own module.
+
+=item *
+L<HAARG|https://metacpan.org/author/HAARG> for reviewing
+an initial version of this code.
+
+=back
+
