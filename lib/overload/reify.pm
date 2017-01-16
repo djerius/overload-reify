@@ -365,7 +365,7 @@ overloaded operators. The methods for operators which already
 utilize a method name are wrappers which call the original methods by
 name.  For operators using coderefs, the generated methods alias
 the coderefs.  A mapping of operators to method names is available via
-the L</OPS> method.
+the L</method_names> method.
 
 By default named methods are constructed for I<all> overloaded
 operators, regardless of how they are implemented (providing the child
