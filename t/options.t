@@ -42,7 +42,7 @@ subtest "-not => ':all'" => sub {
 
   use base qw[ Parent ];
 
-  use overload::reify { -prefix => 'smooth_' };
+  use overload::reify +{ -prefix => 'smooth_' };
 }
 
 subtest "-prefix" => sub {
@@ -54,7 +54,7 @@ subtest "-prefix" => sub {
 
   use base qw[ Parent ];
 
-  use overload::reify { -methods => 0 };
+  use overload::reify +{ -methods => 0 };
 }
 
 subtest "-methods => 0" => sub {
@@ -65,7 +65,7 @@ subtest "-methods => 0" => sub {
 { package C5;
   use base qw[ Parent ];
 }
-use overload::reify { -into => 'C5' };
+use overload::reify +{ -into => 'C5' };
 
 
 subtest "-into" => sub {
