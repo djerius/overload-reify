@@ -178,7 +178,7 @@ sub import {
 
 	    # if first is an exclusion, populate
             @install{ _ops( ':all' ) } = 1
-              unless %install;
+		if @args == @_ - 1;
 
             $arg = shift @args
               or croak( "missing operator after -not\n" );
