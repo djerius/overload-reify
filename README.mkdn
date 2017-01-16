@@ -1,0 +1,154 @@
+# NAME
+
+overload::reify - Provide named methods for inherited overloaded operators
+
+# VERSION
+
+version 0.01
+
+# SYNOPSIS
+
+    { package Parent;
+      use overload
+        '+=' => 'plus_equals',
+        '++' => sub { ... };
+
+      # ...
+
+      sub plus_equals { ... }
+    }
+
+    { package Child1;
+
+      use Parent;
+
+      use overload::reify;
+
+      # this creates new methods:
+      #
+      #  operator_increment()
+      #    performs the ++ operation
+      #
+      #  operator_add_assign()
+      #    comparable to plus_equals(), but modifying
+      #    it won't modify plus_equals
+
+    }
+
+    { package Child2;
+
+      use Parent;
+
+      # don't create methods for overloads with method names
+      use overload::reify { -methods => 0 };
+
+      # this creates new methods:
+      #
+      #  operator_increment()
+      #    performs the ++ operation
+    }
+
+# DESCRIPTION
+
+This pragma creates named methods for inherited operator overloads.
+The child may then modify them using such packages as [Moo](https://metacpan.org/pod/Moo),
+[Moose](https://metacpan.org/pod/Moose), or [Class::Method::Modifers](https://metacpan.org/pod/Class::Method::Modifers).
+
+## Background
+
+When a package overloads an operator it provides either a method
+name or a coderef, e.g.
+
+    overload
+      '++' => 'plus_plus',
+      '--' => sub { ..., }
+
+In the latter case, the overloaded subroutine cannot be modfied via
+e.g., the **around** subroutine in
+[Class::Method::Modifiers](https://metacpan.org/pod/Class::Method::Modifiers#around) (or
+[Moo](https://metacpan.org/pod/Moo#around) or [Moose](https://metacpan.org/pod/Moose#around)) as it has no named symbol
+table entry.
+
+**overload::reify** installs named methods in a package's symbol table for
+overloaded operators. The methods for operators which already
+utilize a method name are wrappers which call the original methods by
+name.  For operators using coderefs, the generated methods alias
+the coderefs.  A mapping of operators to method names is available via
+the ["OPS"](#ops) method.
+
+By default named methods are constructed for _all_ overloaded
+operators, regardless of how they are implemented (providing the child
+class a uniform naming scheme). If this is not desired, set the
+`-methods` option to false.
+
+## Usage
+
+The pragma is invoked with the following template:
+
+    use overload::reify @operators, ?\%options;
+
+where `@operators` is a list of strings, each of which may contain:
+
+- an operator to be considered, e.g. `'++'`;
+- a tag (in the form `:`_class_) representing a class
+of operators. A class may be any of the keys accepted by the
+[overload](https://metacpan.org/pod/overload#Overloadable-Operations) pragma, as well as the
+special class `all`, which consists of all operators.
+- the token `-not`, indicating that the next operator is to be excluded
+from consideration.  If `-not` is the first element in the list of
+operators, the list is pre-seeded with all of the operators.
+
+and %options is a hash with one or more of the following keys:
+
+- `-into`
+
+    The package into which the methods will be installed.  This defaults
+    to the calling package.
+
+- `-methods`
+
+    A boolean indicating whether or not wrappers will be generated for overloaded operators with named methods.  This defaults to _true_.
+
+- `-prefix`
+
+    The prefix for the names of the generated method names.  It defaults to
+    `operator_`.
+
+# METHODS
+
+## method\_names
+
+    # from the command line:
+    perl -Ilib -MData::Dumper -Moverload::reify \
+       -e 'print Dumper overload::reify->method_names()'
+
+    # in code 
+    $hashref = overload::reify->method_names( %options );
+
+This class method returns a hashref whose keys are operators and whose
+values are the names of generated methods.  The available options are:
+
+- `-prefix`
+
+    The prefix for the names of the generated method names.  It defaults to
+    `operator_`.
+
+# SEE ALSO
+
+[Class::Method::Modfiers](https://metacpan.org/pod/Class::Method::Modfiers), [Moo](https://metacpan.org/pod/Moo), [Moose](https://metacpan.org/pod/Moose).
+
+# CONTRIBUTORS
+
+Thanks to [MSTROUT](https://metacpan.org/author/MSTROUT) for the
+suggestion to house this code in its own module.
+
+# AUTHOR
+
+Diab Jerius <djerius@cpan.org>
+
+# COPYRIGHT AND LICENSE
+
+This software is copyright (c) 2017 by Smithsonian Astrophysical Observatory.
+
+This is free software; you can redistribute it and/or modify it under
+the same terms as the Perl 5 programming language system itself.
