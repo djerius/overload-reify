@@ -401,7 +401,7 @@ operators, the list is pre-seeded with all of the operators.
 
 =back
 
-and %options is a hash with one or more of the following keys:
+and C<%options> is a hash with one or more of the following keys:
 
 =over
 

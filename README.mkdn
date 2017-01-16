@@ -98,7 +98,7 @@ special class `all`, which consists of all operators.
 from consideration.  If `-not` is the first element in the list of
 operators, the list is pre-seeded with all of the operators.
 
-and %options is a hash with one or more of the following keys:
+and `%options` is a hash with one or more of the following keys:
 
 - `-into`
 
