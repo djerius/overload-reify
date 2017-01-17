@@ -267,11 +267,15 @@ sub _ops {
   perl -Ilib -MData::Dumper -Moverload::reify \
      -e 'print Dumper overload::reify->method_names()'
 
-  # in code 
-  $hashref = overload::reify->method_names( %options );
+  # in code
+  $hashref = overload::reify->method_names( ?@ops, ?\%options );
 
-This class method returns a hashref whose keys are operators and whose
-values are the names of generated methods.  The available options are:
+This class method retuns the  mapping between operations and generated
+method names. If no operations are passed, a map for all of the
+supported ones is returned.
+
+The map is returned a hashref whose keys are operators and whose
+values are the names of generated methods. The available options are:
 
 =over
 
@@ -288,9 +292,13 @@ sub method_names {
 
     my $class = shift;
 
-    my %opt = ( -prefix => 'operator_', @_ );
+    my %opt = ( -prefix => 'operator_',
+		'HASH' eq ref $_[-1] ? %{ pop() } : (),
+	      );
 
-    return { map +($_ => $opt{-prefix} . $OP{$_}), keys %OP };
+    my @ops = @_ ? @_ : keys %OP;
+
+    return { map +($_ => $opt{-prefix} . $OP{$_}), @ops };
 };
 
 
