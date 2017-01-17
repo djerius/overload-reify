@@ -4,6 +4,27 @@ use Test2::Bundle::Extended;
 
 use overload::reify;
 
+subtest 'tags_to_ops' => sub {
+
+    for my $class ( keys %overload::ops, 'all' ) {
+
+        my @expected = sort do {
+
+	    if ( $class eq 'all' ) {
+		map { grep $_ ne 'fallback', split( /\s+/, $overload::ops{$_} ) } keys %overload::ops;
+	    }
+
+	    else {
+		grep $_ ne 'fallback', split( /\s+/, $overload::ops{$class} );
+	    }
+	};
+
+        my $got = [ sort overload::reify->tag_to_ops( ":$class" ) ];
+        is( $got, \@expected, ":$class" );
+    }
+
+};
+
 subtest "set" => sub {
     my %excluded = ( 'fallback' => 1 );
 

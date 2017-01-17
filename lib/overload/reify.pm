@@ -278,7 +278,7 @@ sub tag_to_ops {
 
     my ( $tag ) = $op =~ /^:(.*)$/;
 
-    return grep( $_ ne 'fallback', $overload::ops{$tag} )
+    return grep( $_ ne 'fallback', split( /\s+/, $overload::ops{$tag} ) )
       if defined $overload::ops{$tag};
 
     return;
