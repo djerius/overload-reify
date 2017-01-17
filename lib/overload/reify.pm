@@ -305,8 +305,9 @@ sub _ops {
   # in code
   $hashref = overload::reify->method_names( ?@ops, ?\%options );
 
-This class method retuns the  mapping between operations and generated
-method names. If no operations are passed, a map for all of the
+This class method retuns the mapping between operators and generated
+method names.  Supplied operators are first run through
+L</tag_to_ops>.  If no operators are passed, a map for all of the
 supported ones is returned.
 
 The map is returned a hashref whose keys are operators and whose
@@ -331,7 +332,7 @@ sub method_names {
 		'HASH' eq ref $_[-1] ? %{ pop() } : (),
 	      );
 
-    my @ops = @_ ? @_ : keys %OP;
+    my @ops = @_ ? map $class->tag_to_ops( $_ ), @_ : keys %OP;
 
     return { map +($_ => $opt{-prefix} . $OP{$_}), @ops };
 };
