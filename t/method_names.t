@@ -2,7 +2,7 @@
 
 use Test2::Bundle::Extended;
 
-use overload::reify;
+use overload::reify ();
 
 subtest 'tags_to_ops' => sub {
 
