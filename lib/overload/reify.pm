@@ -177,7 +177,7 @@ sub import {
         if ( $arg eq '-not' ) {
 
 	    # if first is an exclusion, populate
-            @install{ _ops( ':all' ) } = 1
+            @install{ $class->_ops( ':all' ) } = 1
 		if @args == @_ - 1;
 
             $arg = shift @args
@@ -185,17 +185,17 @@ sub import {
 
 	    $arg = [ $arg ] unless 'ARRAY' eq ref $arg;
 
-            delete @install{ _ops( $_ ) } foreach @$arg
+            delete @install{ $class->_ops( $_ ) } foreach @$arg
         }
         else {
-            @install{ _ops( $arg ) } = 1;
+            @install{ $class->_ops( $arg ) } = 1;
         }
     }
 
     # default to all if not specified, but only if no arguments were
     # passed. that way if the caller (mistakenly?) excludes everything
     # it gets what it asks for.
-    @install{ _ops( ':all' ) } = 1
+    @install{ $class->_ops( ':all' ) } = 1
 	unless %install || @_;
 
     for my $op ( keys %install ) {
@@ -245,9 +245,33 @@ sub import {
     }
 }
 
-sub _ops {
+=method tag_to_ops
 
-    my ( $op ) = @_;
+  @ops = overload::reify->tag_to_ops( $tag );
+
+Return a list of operators correspond to the passed tag.  A tag is a string which
+is either
+
+=over
+
+=item *
+
+an operator, e.g. C<'++'>; or
+
+=item *
+
+a string (in the form C<:>I<class>) representing a class
+of operators. A class may be any of the keys accepted by the
+L<overload|overload/Overloadable Operations> pragma, as well as the
+special class C<all>, which consists of all operators.
+
+=back
+
+=cut
+
+sub tag_to_ops {
+
+    my ( $class, $op ) = @_;
 
     return $op if defined $OP{$op};
     return keys %OP if $op eq ':all';
@@ -257,8 +281,19 @@ sub _ops {
     return grep( $_ ne 'fallback', $overload::ops{$tag} )
       if defined $overload::ops{$tag};
 
-    croak( "unknown operator or tag: $op\n" );
     return;
+}
+
+sub _ops {
+
+    my ( $class, $op ) = @_;
+
+    my @ops = $class->tag_to_ops( $op );
+
+    croak( "unknown operator or tag: $op\n" )
+      unless @ops;
+
+    return @ops;
 }
 
 =method method_names
