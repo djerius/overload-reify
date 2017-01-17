@@ -209,33 +209,37 @@ sub import {
         next unless defined $coderef;
 
         # method name ?
-        my $method_name;
+        my $original_method_name;
         if (
             ( defined &overload::nil && $coderef == \&overload::nil )
             || ( defined &overload::_nil
                 && $coderef == \&overload::_nil ) )
         {
-
-            $method_name = ${ *{$glob}{SCALAR} };
+            $original_method_name = ${ *{$glob}{SCALAR} };
             # weird but possible?
-            next unless defined $method_name;
+            next unless defined $original_method_name;
         }
 
+        my $new_method_name = $method_name_prefix . $OP{$op};
+
 	# it's a real method; only rewire if requested to do so
-        if ( defined $method_name ) {
+        if ( defined $original_method_name ) {
             next unless $wrap_methods;
+
+	    # if it's the same name, we'll simply pick it up via
+	    # inheritance
+	    next if $original_method_name eq $new_method_name;
+
 	    ## no critic(ProhibitStringyEval)
             $coderef
-              = eval "package $into; sub { shift()->$method_name(\@_) }";
+              = eval "package $into; sub { shift()->$original_method_name(\@_) }";
         }
 
         # (re)wire the overload to use a new method name
 
-        $method_name = $method_name_prefix . $OP{$op};
-
-        *{ _getglob "${into}::${method_name}" } = $coderef;
+        *{ _getglob "${into}::${new_method_name}" } = $coderef;
         $glob  = _getglob "${into}::${symbol}";
-        *$glob = \$method_name;
+        *$glob = \$new_method_name;
         no warnings 'redefine';
         *$glob = defined &overload::nil ? \&overload::nil : \&overload::_nil;
     }
@@ -348,7 +352,7 @@ L<Moose>, or L<Class::Method::Modifers>.
 =head2 Background
 
 When a package overloads an operator it provides either a method
-name or a coderef, e.g.
+name or a code reference, e.g.
 
   overload
     '++' => 'plus_plus',
@@ -360,12 +364,17 @@ L<Class::Method::Modifiers|Class::Method::Modifiers/around> (or
 L<Moo|Moo/around> or L<Moose|Moose/around>) as it has no named symbol
 table entry.
 
-B<overload::reify> installs named methods in a package's symbol table for
-overloaded operators. The methods for operators which already
-utilize a method name are wrappers which call the original methods by
-name.  For operators using coderefs, the generated methods alias
-the coderefs.  A mapping of operators to method names is available via
-the L</method_names> method.
+B<overload::reify> installs named methods for overloaded operators
+into a package's symbol table. The method names are constructed by
+concatenating a prefix (provided by the C<-prefix> option) and a
+standardized operator name (see L</method_names>).
+
+For operators overloaded with a method name which is different from
+the new method name, a wrapper which calls the original method by its
+name is installed.
+
+For operators overloaded with a code reference, an alias to the code
+reference is installed.
 
 By default named methods are constructed for I<all> overloaded
 operators, regardless of how they are implemented (providing the child

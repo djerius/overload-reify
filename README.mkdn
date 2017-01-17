@@ -4,7 +4,7 @@ overload::reify - Provide named methods for inherited overloaded operators
 
 # VERSION
 
-version 0.01
+version 0.02
 
 # SYNOPSIS
 
@@ -57,7 +57,7 @@ The child may then modify them using such packages as [Moo](https://metacpan.org
 ## Background
 
 When a package overloads an operator it provides either a method
-name or a coderef, e.g.
+name or a code reference, e.g.
 
     overload
       '++' => 'plus_plus',
@@ -69,12 +69,17 @@ e.g., the **around** subroutine in
 [Moo](https://metacpan.org/pod/Moo#around) or [Moose](https://metacpan.org/pod/Moose#around)) as it has no named symbol
 table entry.
 
-**overload::reify** installs named methods in a package's symbol table for
-overloaded operators. The methods for operators which already
-utilize a method name are wrappers which call the original methods by
-name.  For operators using coderefs, the generated methods alias
-the coderefs.  A mapping of operators to method names is available via
-the ["method\_names"](#method_names) method.
+**overload::reify** installs named methods for overloaded operators
+into a package's symbol table. The method names are constructed by
+concatenating a prefix (provided by the `-prefix` option) and a
+standardized operator name (see ["method\_names"](#method_names)).
+
+For operators overloaded with a method name which is different from
+the new method name, a wrapper which calls the original method by its
+name is installed.
+
+For operators overloaded with a code reference, an alias to the code
+reference is installed.
 
 By default named methods are constructed for _all_ overloaded
 operators, regardless of how they are implemented (providing the child
