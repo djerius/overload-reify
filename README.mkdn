@@ -121,17 +121,35 @@ and `%options` is a hash with one or more of the following keys:
 
 # METHODS
 
+## tag\_to\_ops
+
+    @ops = overload::reify->tag_to_ops( $tag );
+
+Return a list of operators correspond to the passed tag.  A tag is a string which
+is either
+
+- an operator, e.g. `'++'`; or
+- a string (in the form `:`_class_) representing a class
+of operators. A class may be any of the keys accepted by the
+[overload](https://metacpan.org/pod/overload#Overloadable-Operations) pragma, as well as the
+special class `all`, which consists of all operators.
+
 ## method\_names
 
     # from the command line:
     perl -Ilib -MData::Dumper -Moverload::reify \
        -e 'print Dumper overload::reify->method_names()'
 
-    # in code 
-    $hashref = overload::reify->method_names( %options );
+    # in code
+    $hashref = overload::reify->method_names( ?@ops, ?\%options );
 
-This class method returns a hashref whose keys are operators and whose
-values are the names of generated methods.  The available options are:
+This class method retuns the mapping between operators and generated
+method names.  Supplied operators are first run through
+["tag\_to\_ops"](#tag_to_ops).  If no operators are passed, a map for all of the
+supported ones is returned.
+
+The map is returned a hashref whose keys are operators and whose
+values are the names of generated methods. The available options are:
 
 - `-prefix`
 

@@ -12,6 +12,8 @@ Revision history for {{$dist->name}}
     * new class method tag_to_ops, returns list of operators
       corresponding to a tag
 
+    * arguments to method_names are now passed through tag_to_ops
+
 
 0.02      2017-01-17 10:12:51-05:00 America/New_York (TRIAL RELEASE)
 
