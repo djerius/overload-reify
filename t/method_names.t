@@ -20,7 +20,7 @@ subtest 'tags_to_ops' => sub {
 	};
 
         my $got = [ sort overload::reify->tag_to_ops( ":$class" ) ];
-        is( $got, \@expected, ":$class" );
+        is( $got, bag { item($_) foreach @expected; end(); } , ":$class" );
     }
 
 };
@@ -34,12 +34,13 @@ subtest 'method_names' => sub {
         my @ops = grep( !$excluded{$_},
             map( split( /\s+/, $_ ), values %overload::ops ) );
 
-        my $name = overload::reify->method_names();
+        my $name = overload::reify->method_names( { -prefix => '' } );
 
-        my @missing = grep !defined $name->{$_}, @ops;
-        is( \@missing, [], "all operators are named" );
+        my @missing = grep $name->{$_} eq '', @ops;
+	# backwards compare so error message makes sense
+        is( [], \@missing, "all operators are named" );
 
-        my @extra = grep defined $name->{$_}, keys %excluded;
+        my @extra = grep exists $name->{$_}, keys %excluded;
         is( \@extra, [], "no extra operators" );
     };
 

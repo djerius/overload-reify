@@ -12,17 +12,7 @@ our $VERSION = '0.04';
 use overload ();
 use Carp;
 
-my %OP = (
-
-    # grab 'em all
-    (
-        map +( $_ => undef ),
-        grep( $_ ne 'fallback',
-            map( split( /\s+/, $_ ), values %overload::ops ) )
-    ),
-
-    # and update those we known with a method name
-    # anything undef will trigger an error in the test suite.
+my %MethodNames = (
 
     # with_assign     	=> '+ - * / % ** << >> x .',
     '+'  		=> 'add',
@@ -129,6 +119,16 @@ my %OP = (
     'nomethod' 		=> 'nomethod',
     '='        		=> 'copy_constructor',
 );
+
+# get those supported on this version of Perl
+my @PlatformOps = grep( $_ ne 'fallback',
+		map( split( /\s+/, $_ ), values %overload::ops ) );
+
+# and create a mapping to the method names. if a method name
+# is missing, it'll result in an undef entry in the mapping,
+# and it'll trigger an error in the test suite.
+my %OP;
+@OP{@PlatformOps} = @MethodNames{@PlatformOps};
 
 
 # operator overloads are stored in the symbol table as "($op"
@@ -277,6 +277,9 @@ sub tag_to_ops {
     return keys %OP if $op eq ':all';
 
     my ( $tag ) = $op =~ /^:(.*)$/;
+
+    croak( "couldn't parse \$op:  $op\n" )
+      if ! defined $tag;
 
     return grep( $_ ne 'fallback', split( /\s+/, $overload::ops{$tag} ) )
       if defined $overload::ops{$tag};
