@@ -4,7 +4,7 @@ overload::reify - Provide named methods for inherited overloaded operators
 
 # VERSION
 
-version 0.05
+version 0.06
 
 # SYNOPSIS
 
