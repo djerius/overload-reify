@@ -2,6 +2,12 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+  [ENHANCEMENT]
+    * -redefine option, if false, will throw an exception if the target
+      package already defines the operator or method_name to be installed.
+      defaults to false.
+
+
 0.04      2017-01-17 15:39:03-05:00 America/New_York (TRIAL RELEASE)
 
   [BUG FIX]

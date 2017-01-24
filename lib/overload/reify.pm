@@ -142,19 +142,13 @@ my %OP;
 #
 # cribbed from Role::Tiny
 
-# stolen from Role::Tiny
-sub _getglob {
-    ## no critic( ProhibitNoStrict )
-    no strict 'refs';
-    \*{ $_[0] };
-}
-
 
 sub import {
 
     my $class = shift;
 
     my %opt = (
+        -redefine => 0,
 	-methods => 1,
         -prefix => 'operator_',
         'HASH' eq ref $_[-1] ? %{ pop() } : (),
@@ -164,6 +158,7 @@ sub import {
     my $into = delete( $opt{-into} ) || caller;
     my $wrap_methods = delete $opt{-methods};
     my $method_name_prefix = delete $opt{-prefix};
+    my $redefine_methods   = delete $opt{-redefine};
 
     croak( "unknown options: ", keys %opt ) if %opt;
 
@@ -235,14 +230,54 @@ sub import {
               = eval "package $into; sub { shift()->$original_method_name(\@_) }";
         }
 
-        # (re)wire the overload to use a new method name
-
-        *{ _getglob "${into}::${new_method_name}" } = $coderef;
-        $glob  = _getglob "${into}::${symbol}";
-        *$glob = \$new_method_name;
-        no warnings 'redefine';
-        *$glob = defined &overload::nil ? \&overload::nil : \&overload::_nil;
+	_install_overload( $into, $symbol, $new_method_name, $coderef, $redefine_methods );
     }
+}
+
+sub _install_overload {
+
+    my ( $into, $symbol, $method_name, $coderef, $redefine ) = @_;
+
+    # if not overwriting, make sure there's nothing there
+    unless ( $redefine ) {
+
+	croak( "${into}::${_} would be redefined" )
+	  for grep { _is_existing_method( $into, $_ ) }
+	    $symbol, $method_name;
+    }
+
+    no warnings 'redefine';
+    *{ _getglob( "${into}::${method_name}") } = $coderef;
+    my $glob  = _getglob ("${into}::${symbol}");
+    *$glob = \$method_name;
+    *$glob = defined &overload::nil ? \&overload::nil : \&overload::_nil;
+}
+
+# stolen from Role::Tiny
+sub _getglob {
+    ## no critic( ProhibitNoStrict )
+    no strict 'refs';
+    \*{ $_[0] };
+}
+
+
+# don't create a symbol table entry if we can help it
+sub _get_existing_glob {
+    my ( $package, $name ) = @_;
+    ## no critic( ProhibitNoStrict )
+    no strict 'refs';
+
+    exists ${"${package}::"}{$name} ? _getglob( "${package}::${name}" ) : undef;
+
+}
+
+sub _is_existing_method {
+
+    my ( $package, $name ) = @_;
+
+    my $glob = _get_existing_glob( $package, $name );
+
+    return defined $glob ? defined *{$glob}{CODE} : 0;
 }
 
 =method tag_to_ops
@@ -340,7 +375,6 @@ sub method_names {
     return { map +($_ => $opt{-prefix} . $OP{$_}), @ops };
 };
 
-
 1;
 
 # COPYRIGHT
@@ -414,11 +448,14 @@ table entry.
 B<overload::reify> installs named methods for overloaded operators
 into a package's symbol table. The method names are constructed by
 concatenating a prefix (provided by the C<-prefix> option) and a
-standardized operator name (see L</method_names>).
+standardized operator name (see L</method_names>). An existing method
+with the same name will be quietly replaced, unless the L</-redefine> option
+is true.
 
 For operators overloaded with a method name which is different from
 the new method name, a wrapper which calls the original method by its
-name is installed.
+name is installed.  If the original and new method names are the same,
+nothing is installed.
 
 For operators overloaded with a code reference, an alias to the code
 reference is installed.
@@ -465,6 +502,12 @@ and C<%options> is a hash with one or more of the following keys:
 
 The package into which the methods will be installed.  This defaults
 to the calling package.
+
+=item C<-redefine>
+
+A boolean which if true will cause an exception to be thrown if
+installing the new method would replace an existing one of the same
+name in the package specified by L</-into>.  Defaults to false.
 
 =item C<-methods>
 
