@@ -533,7 +533,7 @@ Thanks to
 =item *
 
 L<MSTROUT|https://metacpan.org/author/MSTROUT> for the
-suggestion to house this code in its own module.
+suggestion to house this code in its own module and for the module name.
 
 =item *
 L<HAARG|https://metacpan.org/author/HAARG> for reviewing
