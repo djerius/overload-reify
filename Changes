@@ -2,6 +2,13 @@ Revision history for {{$dist->name}}
 
 {{$NEXT}}
 
+0.06      2017-01-25 13:41:53-05:00 America/New_York (TRIAL RELEASE)
+
+  [BUILD]
+
+    * dist.ini: use [AutoPreqs] plugin to find Perl version in reify.pm
+      (thanks @manwar!)
+
 0.05      2017-01-17 15:39:03-05:00 America/New_York (TRIAL RELEASE)
 
   [ENHANCEMENT]

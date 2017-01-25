@@ -1,3 +1,6 @@
+requires "Carp" => "0";
+requires "overload" => "0";
+requires "perl" => "5.006";
 requires "strict" => "0";
 requires "warnings" => "0";
 
@@ -7,9 +10,12 @@ on 'test' => sub {
   requires "File::Spec" => "0";
   requires "IO::Handle" => "0";
   requires "IPC::Open3" => "0";
+  requires "Storable" => "0";
   requires "Test2::Bundle::Extended" => "0";
   requires "Test::Lib" => "0";
   requires "Test::More" => "0";
+  requires "base" => "0";
+  requires "blib" => "1.01";
 };
 
 on 'test' => sub {
@@ -23,6 +29,7 @@ on 'configure' => sub {
 on 'develop' => sub {
   requires "Dist::Zilla" => "5";
   requires "Dist::Zilla::Plugin::AutoMetaResources" => "0";
+  requires "Dist::Zilla::Plugin::AutoPrereqs" => "0";
   requires "Dist::Zilla::Plugin::BumpVersionAfterRelease" => "0";
   requires "Dist::Zilla::Plugin::CPANFile" => "0";
   requires "Dist::Zilla::Plugin::CheckMetaResources" => "0";
@@ -56,6 +63,7 @@ on 'develop' => sub {
   requires "Test::CPAN::Meta" => "0";
   requires "Test::Fixme" => "0";
   requires "Test::MinimumVersion" => "0";
+  requires "Test::More" => "0";
   requires "Test::NoBreakpoints" => "0";
   requires "Test::Perl::Critic" => "0";
   requires "Test::Pod" => "1.41";

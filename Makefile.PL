@@ -2,7 +2,7 @@
 use strict;
 use warnings;
 
-
+use 5.006;
 
 use ExtUtils::MakeMaker;
 
@@ -14,8 +14,11 @@ my %WriteMakefileArgs = (
   },
   "DISTNAME" => "overload-reify",
   "LICENSE" => "perl",
+  "MIN_PERL_VERSION" => "5.006",
   "NAME" => "overload::reify",
   "PREREQ_PM" => {
+    "Carp" => 0,
+    "overload" => 0,
     "strict" => 0,
     "warnings" => 0
   },
@@ -25,9 +28,12 @@ my %WriteMakefileArgs = (
     "File::Spec" => 0,
     "IO::Handle" => 0,
     "IPC::Open3" => 0,
+    "Storable" => 0,
     "Test2::Bundle::Extended" => 0,
     "Test::Lib" => 0,
-    "Test::More" => 0
+    "Test::More" => 0,
+    "base" => 0,
+    "blib" => "1.01"
   },
   "VERSION" => "0.06",
   "test" => {
@@ -37,14 +43,19 @@ my %WriteMakefileArgs = (
 
 
 my %FallbackPrereqs = (
+  "Carp" => 0,
   "Class::Method::Modifiers" => 0,
   "ExtUtils::MakeMaker" => 0,
   "File::Spec" => 0,
   "IO::Handle" => 0,
   "IPC::Open3" => 0,
+  "Storable" => 0,
   "Test2::Bundle::Extended" => 0,
   "Test::Lib" => 0,
   "Test::More" => 0,
+  "base" => 0,
+  "blib" => "1.01",
+  "overload" => 0,
   "strict" => 0,
   "warnings" => 0
 );
