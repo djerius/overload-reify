@@ -20,8 +20,8 @@ subtest "method" => sub {
 
     $c1->operator_add_assign( 3 );
     is( $c1->logs, [ [ "Parent::+=" => 2 ],
-    		    [ "Parent::+=" => 3 ],
-    	], "method" );
+                    [ "Parent::+=" => 3 ],
+        ], "method" );
 
 };
 
@@ -33,8 +33,8 @@ subtest "coderef" => sub {
 
     $c1->operator_subtract_assign( 3 );
     is( $c1->logs, [ [ "Parent::-=" => 2 ],
-    		    [ "Parent::-=" => 3 ],
-    	], "method" );
+                    [ "Parent::-=" => 3 ],
+        ], "method" );
 
 };
 

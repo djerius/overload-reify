@@ -10,119 +10,119 @@ use warnings;
 our $VERSION = '0.07';
 
 use overload ();
-use Carp;
+use Carp ();
 
 my %MethodNames = (
 
-    # with_assign     	=> '+ - * / % ** << >> x .',
-    '+'  		=> 'add',
-    '-'  		=> 'subtract',
-    '*'  		=> 'multiply',
-    '/'  		=> 'divide',
-    '%'  		=> 'modulus',
-    '**' 		=> 'pow',
-    '<<' 		=> 'lshift',
-    '>>' 		=> 'rshift',
-    'x'  		=> 'repetition',
-    '.'  		=> 'append',
+    # with_assign       => '+ - * / % ** << >> x .',
+    '+'                 => 'add',
+    '-'                 => 'subtract',
+    '*'                 => 'multiply',
+    '/'                 => 'divide',
+    '%'                 => 'modulus',
+    '**'                => 'pow',
+    '<<'                => 'lshift',
+    '>>'                => 'rshift',
+    'x'                 => 'repetition',
+    '.'                 => 'append',
 
-    # assign          	=> '+= -= *= /= %= **= <<= >>= x= .='
-    '+='  		=> 'add_assign',
-    '-='  		=> 'subtract_assign',
-    '*='  		=> 'multiply_assign',
-    '/='  		=> 'divide_assign',
-    '%='  		=> 'modulus_assign',
-    '**=' 		=> 'pow_assign',
-    '<<=' 		=> 'lshift_assign',
-    '>>=' 		=> 'rshift_assign',
-    'x='  		=> 'repetition_assign',
-    '.='  		=> 'append_assign',
+    # assign            => '+= -= *= /= %= **= <<= >>= x= .='
+    '+='                => 'add_assign',
+    '-='                => 'subtract_assign',
+    '*='                => 'multiply_assign',
+    '/='                => 'divide_assign',
+    '%='                => 'modulus_assign',
+    '**='               => 'pow_assign',
+    '<<='               => 'lshift_assign',
+    '>>='               => 'rshift_assign',
+    'x='                => 'repetition_assign',
+    '.='                => 'append_assign',
 
     # num_comparison    => '< <= > >= == !=',
-    '<'  		=> 'numeric_lt',
-    '<=' 		=> 'numeric_le',
-    '>'  		=> 'numeric_gt',
-    '>=' 		=> 'numeric_ge',
-    '==' 		=> 'numeric_eq',
-    '!=' 		=> 'numeric_ne',
+    '<'                 => 'numeric_lt',
+    '<='                => 'numeric_le',
+    '>'                 => 'numeric_gt',
+    '>='                => 'numeric_ge',
+    '=='                => 'numeric_eq',
+    '!='                => 'numeric_ne',
 
     # '3way_comparison' => '<=> cmp',
-    '<=>' 		=> 'numeric_cmp',
-    'cmp' 		=> 'string_cmp',
+    '<=>'               => 'numeric_cmp',
+    'cmp'               => 'string_cmp',
 
     # str_comparison    => 'lt le gt ge eq ne',
-    'lt' 		=> 'string_lt',
-    'le' 		=> 'string_le',
-    'gt' 		=> 'string_gt',
-    'ge' 		=> 'string_ge',
-    'eq' 		=> 'string_eq',
-    'ne' 		=> 'string_ne',
+    'lt'                => 'string_lt',
+    'le'                => 'string_le',
+    'gt'                => 'string_gt',
+    'ge'                => 'string_ge',
+    'eq'                => 'string_eq',
+    'ne'                => 'string_ne',
 
     # binary            => '& &= | |= ^ ^= &. &.= |. |.= ^. ^.=',
-    '&'   		=> 'binary_and',
-    '&='  		=> 'binary_and_assign',
-    '|'   		=> 'binary_or',
-    '|='  		=> 'binary_or_assign',
-    '^'   		=> 'binary_xor',
-    '^='  		=> 'binary_xor_assign',
-    '&.'  		=> 'binary_string_and',
-    '&.=' 		=> 'binary_string_and_assign',
-    '|.'  		=> 'binary_string_or',
-    '|.=' 		=> 'binary_string_or_assign',
-    '^.'  		=> 'binary_string_xor',
-    '^.=' 		=> 'binary_string_xor_assign',
+    '&'                 => 'binary_and',
+    '&='                => 'binary_and_assign',
+    '|'                 => 'binary_or',
+    '|='                => 'binary_or_assign',
+    '^'                 => 'binary_xor',
+    '^='                => 'binary_xor_assign',
+    '&.'                => 'binary_string_and',
+    '&.='               => 'binary_string_and_assign',
+    '|.'                => 'binary_string_or',
+    '|.='               => 'binary_string_or_assign',
+    '^.'                => 'binary_string_xor',
+    '^.='               => 'binary_string_xor_assign',
 
-    # unary         	=> 'neg ! ~ ~.',
-    'neg' 		=> 'neg',
-    '!'   		=> 'not',
-    '~'   		=> 'bitwise_negation',
-    '~.'  		=> 'bitwise_string_negation',
+    # unary             => 'neg ! ~ ~.',
+    'neg'               => 'neg',
+    '!'                 => 'not',
+    '~'                 => 'bitwise_negation',
+    '~.'                => 'bitwise_string_negation',
 
 
-    # mutators      	=> '++ --',
-    '++' 		=> 'increment',
-    '--' 		=> 'decrement',
+    # mutators          => '++ --',
+    '++'                => 'increment',
+    '--'                => 'decrement',
 
-    # func          	=> 'atan2 cos sin exp abs log sqrt int',
-    'atan2' 		=> 'atan2',
-    'cos'   		=> 'cos',
-    'sin'   		=> 'sin',
-    'exp'   		=> 'exp',
-    'abs'   		=> 'abs',
-    'log'   		=> 'log',
-    'sqrt'  		=> 'sqrt',
-    'int'   		=> 'int',
+    # func              => 'atan2 cos sin exp abs log sqrt int',
+    'atan2'             => 'atan2',
+    'cos'               => 'cos',
+    'sin'               => 'sin',
+    'exp'               => 'exp',
+    'abs'               => 'abs',
+    'log'               => 'log',
+    'sqrt'              => 'sqrt',
+    'int'               => 'int',
 
-    # conversion    	=> 'bool "" 0+ qr',
-    'bool' 		=> 'bool',
-    '""'   		=> 'stringify',
-    '0+'   		=> 'numerify',
-    'qr'   		=> 'regexp',
+    # conversion        => 'bool "" 0+ qr',
+    'bool'              => 'bool',
+    '""'                => 'stringify',
+    '0+'                => 'numerify',
+    'qr'                => 'regexp',
 
-    # iterators     	=> '<>',
-    '<>' 		=> 'null_filehandle',
+    # iterators         => '<>',
+    '<>'                => 'null_filehandle',
 
-    # filetest      	=> '-X',
-    '-X' 		=> 'filetest',
+    # filetest          => '-X',
+    '-X'                => 'filetest',
 
-    # dereferencing 	=> '${} @{} %{} &{} *{}',
-    '${}' 		=> 'scalar_deref',
-    '@{}' 		=> 'array_deref',
-    '%{}' 		=> 'hash_deref',
-    '&{}' 		=> 'code_deref',
-    '*{}' 		=> 'glob_deref',
+    # dereferencing     => '${} @{} %{} &{} *{}',
+    '${}'               => 'scalar_deref',
+    '@{}'               => 'array_deref',
+    '%{}'               => 'hash_deref',
+    '&{}'               => 'code_deref',
+    '*{}'               => 'glob_deref',
 
-    # matching      	=> '~~',
-    '~~' 		=> 'smartmatch',
+    # matching          => '~~',
+    '~~'                => 'smartmatch',
 
-    # special       	=> 'nomethod fallback ='
-    'nomethod' 		=> 'nomethod',
-    '='        		=> 'copy_constructor',
+    # special           => 'nomethod fallback ='
+    'nomethod'          => 'nomethod',
+    '='                 => 'copy_constructor',
 );
 
 # get those supported on this version of Perl
 my @PlatformOps = grep( $_ ne 'fallback',
-		map( split( /\s+/, $_ ), values %overload::ops ) );
+                map( split( /\s+/, $_ ), values %overload::ops ) );
 
 # and create a mapping to the method names. if a method name
 # is missing, it'll result in an undef entry in the mapping,
@@ -149,7 +149,7 @@ sub import {
 
     my %opt = (
         -redefine => 0,
-	-methods => 1,
+        -methods => 1,
         -prefix => 'operator_',
         'HASH' eq ref $_[-1] ? %{ pop() } : (),
     );
@@ -160,7 +160,7 @@ sub import {
     my $method_name_prefix = delete $opt{-prefix};
     my $redefine_methods   = delete $opt{-redefine};
 
-    croak( "unknown options: ", keys %opt ) if %opt;
+    Carp::croak( "unknown options: ", keys %opt ) if %opt;
 
     my %install;
 
@@ -171,14 +171,14 @@ sub import {
 
         if ( $arg eq '-not' ) {
 
-	    # if first is an exclusion, populate
+            # if first is an exclusion, populate
             @install{ $class->_ops( ':all' ) } = 1
-		if @args == @_ - 1;
+                if @args == @_ - 1;
 
             $arg = shift @args
-              or croak( "missing operator after -not\n" );
+              or Carp::croak( "missing operator after -not\n" );
 
-	    $arg = [ $arg ] unless 'ARRAY' eq ref $arg;
+            $arg = [ $arg ] unless 'ARRAY' eq ref $arg;
 
             delete @install{ $class->_ops( $_ ) } foreach @$arg
         }
@@ -191,14 +191,14 @@ sub import {
     # passed. that way if the caller (mistakenly?) excludes everything
     # it gets what it asks for.
     @install{ $class->_ops( ':all' ) } = 1
-	unless %install || @_;
+        unless %install || @_;
 
     for my $op ( keys %install ) {
 
         my $symbol = '(' . $op;
 
         my $glob = overload::mycan( $into, $symbol );
-	next unless defined $glob;
+        next unless defined $glob;
 
         my $coderef = *{$glob}{CODE};
         next unless defined $coderef;
@@ -217,20 +217,20 @@ sub import {
 
         my $new_method_name = $method_name_prefix . $OP{$op};
 
-	# it's a real method; only rewire if requested to do so
+        # it's a real method; only rewire if requested to do so
         if ( defined $original_method_name ) {
             next unless $wrap_methods;
 
-	    # if it's the same name, we'll simply pick it up via
-	    # inheritance
-	    next if $original_method_name eq $new_method_name;
+            # if it's the same name, we'll simply pick it up via
+            # inheritance
+            next if $original_method_name eq $new_method_name;
 
-	    ## no critic(ProhibitStringyEval)
+            ## no critic(ProhibitStringyEval)
             $coderef
               = eval "package $into; sub { shift()->$original_method_name(\@_) }";
         }
 
-	_install_overload( $into, $symbol, $new_method_name, $coderef, $redefine_methods );
+        _install_overload( $into, $symbol, $new_method_name, $coderef, $redefine_methods );
     }
 }
 
@@ -241,9 +241,9 @@ sub _install_overload {
     # if not overwriting, make sure there's nothing there
     unless ( $redefine ) {
 
-	croak( "${into}::${_} would be redefined" )
-	  for grep { _is_existing_method( $into, $_ ) }
-	    $symbol, $method_name;
+        Carp::croak( "${into}::${_} would be redefined" )
+          for grep { _is_existing_method( $into, $_ ) }
+            $symbol, $method_name;
     }
 
     no warnings 'redefine';
@@ -313,7 +313,7 @@ sub tag_to_ops {
 
     my ( $tag ) = $op =~ /^:(.*)$/;
 
-    croak( "couldn't parse \$op:  $op\n" )
+    Carp::croak( "couldn't parse \$op:  $op\n" )
       if ! defined $tag;
 
     return grep( $_ ne 'fallback', split( /\s+/, $overload::ops{$tag} ) )
@@ -328,7 +328,7 @@ sub _ops {
 
     my @ops = $class->tag_to_ops( $op );
 
-    croak( "unknown operator or tag: $op\n" )
+    Carp::croak( "unknown operator or tag: $op\n" )
       unless @ops;
 
     return @ops;
@@ -343,7 +343,7 @@ sub _ops {
   # in code
   $hashref = overload::reify->method_names( ?@ops, ?\%options );
 
-This class method retuns the mapping between operators and generated
+This class method returns the mapping between operators and generated
 method names.  Supplied operators are first run through
 L</tag_to_ops>.  If no operators are passed, a map for all of the
 supported ones is returned.
@@ -367,8 +367,8 @@ sub method_names {
     my $class = shift;
 
     my %opt = ( -prefix => 'operator_',
-		'HASH' eq ref $_[-1] ? %{ pop() } : (),
-	      );
+                'HASH' eq ref $_[-1] ? %{ pop() } : (),
+              );
 
     my @ops = @_ ? map $class->tag_to_ops( $_ ), @_ : keys %OP;
 
@@ -439,7 +439,7 @@ name or a code reference, e.g.
     '++' => 'plus_plus',
     '--' => sub { ..., }
 
-In the latter case, the overloaded subroutine cannot be modfied via
+In the latter case, the overloaded subroutine cannot be modified via
 e.g., the B<around> subroutine in
 L<Class::Method::Modifiers|Class::Method::Modifiers/around> (or
 L<Moo|Moo/around> or L<Moose|Moose/around>) as it has no named symbol

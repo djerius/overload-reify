@@ -18,9 +18,9 @@ subtest 'parent ok' => sub {
     $p1 -= 5;
     is ( $p1, 19, '-=' );
     is( $p1->logs, [
-	    [ 'Parent::+=' => 2 ],
-	    [ 'Parent::-=' => 5 ],
-	], "log(-=)" );
+            [ 'Parent::+=' => 2 ],
+            [ 'Parent::-=' => 5 ],
+        ], "log(-=)" );
 
 };
 

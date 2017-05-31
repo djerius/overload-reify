@@ -63,7 +63,7 @@ name or a code reference, e.g.
       '++' => 'plus_plus',
       '--' => sub { ..., }
 
-In the latter case, the overloaded subroutine cannot be modfied via
+In the latter case, the overloaded subroutine cannot be modified via
 e.g., the **around** subroutine in
 [Class::Method::Modifiers](https://metacpan.org/pod/Class::Method::Modifiers#around) (or
 [Moo](https://metacpan.org/pod/Moo#around) or [Moose](https://metacpan.org/pod/Moose#around)) as it has no named symbol
@@ -152,7 +152,7 @@ special class `all`, which consists of all operators.
     # in code
     $hashref = overload::reify->method_names( ?@ops, ?\%options );
 
-This class method retuns the mapping between operators and generated
+This class method returns the mapping between operators and generated
 method names.  Supplied operators are first run through
 ["tag\_to\_ops"](#tag_to_ops).  If no operators are passed, a map for all of the
 supported ones is returned.
@@ -174,7 +174,7 @@ values are the names of generated methods. The available options are:
 Thanks to
 
 - [MSTROUT](https://metacpan.org/author/MSTROUT) for the
-suggestion to house this code in its own module.
+suggestion to house this code in its own module and for the module name.
 - [HAARG](https://metacpan.org/author/HAARG) for reviewing
 an initial version of this code.
 

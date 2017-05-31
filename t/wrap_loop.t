@@ -17,7 +17,7 @@ use Test2::Bundle::Extended;
     package Child;
 
     BEGIN {
-	our @ISA = qw( Parent );
+        our @ISA = qw( Parent );
     }
 
     use overload::reify '+=';
@@ -27,7 +27,7 @@ use Test2::Bundle::Extended;
     my $loop;
 
     before 'operator_add_assign' => sub {
-	croak( "inifinite loop" ) if $loop++;
+        croak( "inifinite loop" ) if $loop++;
     }
 }
 

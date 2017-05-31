@@ -10,14 +10,14 @@ subtest 'tags_to_ops' => sub {
 
         my @expected = sort do {
 
-	    if ( $class eq 'all' ) {
-		map { grep $_ ne 'fallback', split( /\s+/, $overload::ops{$_} ) } keys %overload::ops;
-	    }
+            if ( $class eq 'all' ) {
+                map { grep $_ ne 'fallback', split( /\s+/, $overload::ops{$_} ) } keys %overload::ops;
+            }
 
-	    else {
-		grep $_ ne 'fallback', split( /\s+/, $overload::ops{$class} );
-	    }
-	};
+            else {
+                grep $_ ne 'fallback', split( /\s+/, $overload::ops{$class} );
+            }
+        };
 
         my $got = [ sort overload::reify->tag_to_ops( ":$class" ) ];
         is( $got, bag { item($_) foreach @expected; end(); } , ":$class" );
@@ -37,7 +37,7 @@ subtest 'method_names' => sub {
         my $name = overload::reify->method_names( { -prefix => '' } );
 
         my @missing = grep $name->{$_} eq '', @ops;
-	# backwards compare so error message makes sense
+        # backwards compare so error message makes sense
         is( [], \@missing, "all operators are named" );
 
         my @extra = grep exists $name->{$_}, keys %excluded;
@@ -58,7 +58,7 @@ subtest 'method_names' => sub {
         my $tag = ':mutators';
         my @ops = overload::reify->tag_to_ops( $tag );
 
-	ok ( 0 != @ops, "got some ops" );
+        ok ( 0 != @ops, "got some ops" );
 
         my $expected = overload::reify->method_names( @ops );
 

@@ -14,43 +14,43 @@ use Test2::Bundle::Extended;
     use Class::Method::Modifiers;
 
     before 'operator_add_assign' => sub {
-	my ( $self, $other ) = @_;
-	push @{ $self->logs}, [ __PACKAGE__ . "::before +=" => $other ];
+        my ( $self, $other ) = @_;
+        push @{ $self->logs}, [ __PACKAGE__ . "::before +=" => $other ];
     };
 
     around 'operator_add_assign' => sub {
-	my $orig = shift;
+        my $orig = shift;
 
-	my ( $self, $other ) = @_;
-	push @{ $self->logs}, [ __PACKAGE__ . "::around 1 +=" => $other ];
-	my $result = &$orig;
-	push @{ $result->logs}, [ __PACKAGE__ . "::around 2 +=" => $other ];
-	return $result;
+        my ( $self, $other ) = @_;
+        push @{ $self->logs}, [ __PACKAGE__ . "::around 1 +=" => $other ];
+        my $result = &$orig;
+        push @{ $result->logs}, [ __PACKAGE__ . "::around 2 +=" => $other ];
+        return $result;
     };
 
     after 'operator_add_assign' => sub {
-	my ( $self, $other ) = @_;
-	push @{ $self->logs}, [ __PACKAGE__ . "::after +=" => $other ];
+        my ( $self, $other ) = @_;
+        push @{ $self->logs}, [ __PACKAGE__ . "::after +=" => $other ];
     };
 
     before 'operator_subtract_assign' => sub {
-    	my ( $self, $other ) = @_;
-    	push @{ $self->logs}, [ __PACKAGE__ . "::before -=" => $other ];
+        my ( $self, $other ) = @_;
+        push @{ $self->logs}, [ __PACKAGE__ . "::before -=" => $other ];
     };
 
     around 'operator_subtract_assign' => sub {
-    	my $orig = shift;
+        my $orig = shift;
 
-    	my ( $self, $other ) = @_;
-    	push @{ $self->logs}, [ __PACKAGE__ . "::around 1 -=" => $other ];
-    	my $result = &$orig;
-    	push @{ $self->logs}, [ __PACKAGE__ . "::around 2 -=" => $other ];
-    	return $result;
+        my ( $self, $other ) = @_;
+        push @{ $self->logs}, [ __PACKAGE__ . "::around 1 -=" => $other ];
+        my $result = &$orig;
+        push @{ $self->logs}, [ __PACKAGE__ . "::around 2 -=" => $other ];
+        return $result;
     };
 
     after 'operator_subtract_assign' => sub {
-    	my ( $self, $other ) = @_;
-    	push @{ $self->logs}, [ __PACKAGE__ . "::after -=" => $other ];
+        my ( $self, $other ) = @_;
+        push @{ $self->logs}, [ __PACKAGE__ . "::after -=" => $other ];
     };
 
 }
@@ -64,12 +64,12 @@ subtest "method" => sub {
     is( $c1, 2, 'value' );
 
     is( $c1->logs, [
-	    [ "C1::before +=" => 2 ],
-	    [ "C1::around 1 +=" => 2 ],
-	    [ "Parent::+=" => 2 ],
-	    [ "C1::around 2 +=" => 2 ],
-	    [ "C1::after +=" => 2 ],
-	], "operator" );
+            [ "C1::before +=" => 2 ],
+            [ "C1::around 1 +=" => 2 ],
+            [ "Parent::+=" => 2 ],
+            [ "C1::around 2 +=" => 2 ],
+            [ "C1::after +=" => 2 ],
+        ], "operator" );
 
     # original method should not have been modified
     $c1->clear_logs;
@@ -77,16 +77,16 @@ subtest "method" => sub {
 
     is( $c1, 7, 'value' );
     is( $c1->logs, [
-	    [ "Parent::+=" => 5 ],
-	], "original (inherited) method is unmodified" );
+            [ "Parent::+=" => 5 ],
+        ], "original (inherited) method is unmodified" );
 
     # parent class should not be modified
     my $p1 = Parent->new;
     $p1 += 2;
 
     is( $p1->logs, [
-	    [ "Parent::+=" => 2 ],
-	], "parent operator untouched" );
+            [ "Parent::+=" => 2 ],
+        ], "parent operator untouched" );
 };
 
 subtest "method" => sub {
@@ -98,12 +98,12 @@ subtest "method" => sub {
     is( $c1, -2, 'value' );
 
     is( $c1->logs, [
-	    [ "C1::before -=" => 2 ],
-	    [ "C1::around 1 -=" => 2 ],
-	    [ "Parent::-=" => 2 ],
-	    [ "C1::around 2 -=" => 2 ],
-	    [ "C1::after -=" => 2 ],
-	], "operator" );
+            [ "C1::before -=" => 2 ],
+            [ "C1::around 1 -=" => 2 ],
+            [ "Parent::-=" => 2 ],
+            [ "C1::around 2 -=" => 2 ],
+            [ "C1::after -=" => 2 ],
+        ], "operator" );
 
     # original method should not have been modified
     @{ $c1->logs } = ();
@@ -111,16 +111,16 @@ subtest "method" => sub {
 
     is( $c1, -7, 'value' );
     is( $c1->logs, [
-	    [ "Parent::-=" => 5 ],
-	], "original (inherited) method is unmodified" );
+            [ "Parent::-=" => 5 ],
+        ], "original (inherited) method is unmodified" );
 
     # parent class should not be modified
     my $p1 = Parent->new;
     $p1 -= 2;
 
     is( $p1->logs, [
-	    [ "Parent::-=" => 2 ],
-	], "parent operator untouched" );
+            [ "Parent::-=" => 2 ],
+        ], "parent operator untouched" );
 };
 
 done_testing;
